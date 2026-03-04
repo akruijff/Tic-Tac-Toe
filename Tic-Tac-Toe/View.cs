@@ -35,7 +35,7 @@
         private const int OFFSET_Y = 3;
 
         /// <summary>
-        /// Draws the board and cursor to the console.
+        /// Renders the board and cursor to the console.
         /// </summary>
         public void Draw()
         {
@@ -55,6 +55,18 @@
             }
             Console.WriteLine("+-------+");
             Console.WriteLine("");
+        }
+
+        /// <summary>
+        /// Renders the contextual game information, including error messages, 
+        /// current player turn, and control instructions at the bottom of the interface.
+        /// </summary>
+        /// <remarks>
+        /// This method acts as the "status bar" of the game. It uses <see cref="IsPlayer1Turn"/> 
+        /// to prompt the correct user and displays <see cref="ErrorMessage"/> if a move is invalid.
+        /// </remarks>
+        public void DrawFooter()
+        {
             if (ErrorMessage.Length != 0)
                 Console.WriteLine(ErrorMessage);
             else if (IsPlayer1Turn)

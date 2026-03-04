@@ -26,6 +26,7 @@
         public void Start()
         {
             view.Draw();
+            view.DrawFooter();
             while (!isAbortRequested && board.Status() == GameStatus.Pending)
             {
                 if (view.IsPlayer1Turn)
@@ -35,7 +36,7 @@
             }
             if (board.Status() != GameStatus.Pending)
             {
-                Console.WriteLine();
+                view.Draw();
                 Console.WriteLine("GAME OVER");
                 Console.WriteLine();
                 string s = board.Status() switch
@@ -63,23 +64,19 @@
                     break;
                 case ConsoleKey.W:
                 case ConsoleKey.UpArrow:
-                    view.Draw(view.CursorX, view.CursorY--);
-                    view.Draw(view.CursorX, view.CursorY);
+                    Goto(view.CursorX, view.CursorY - 1);
                     break;
                 case ConsoleKey.S:
                 case ConsoleKey.DownArrow:
-                    view.Draw(view.CursorX, view.CursorY++);
-                    view.Draw(view.CursorX, view.CursorY);
+                    Goto(view.CursorX, view.CursorY + 1);
                     break;
                 case ConsoleKey.A:
                 case ConsoleKey.LeftArrow:
-                    view.Draw(view.CursorX--, view.CursorY);
-                    view.Draw(view.CursorX, view.CursorY);
+                    Goto(view.CursorX - 1, view.CursorY);
                     break;
                 case ConsoleKey.D:
                 case ConsoleKey.RightArrow:
-                    view.Draw(view.CursorX++, view.CursorY);
-                    view.Draw(view.CursorX, view.CursorY);
+                    Goto(view.CursorX + 1, view.CursorY);
                     break;
                 case ConsoleKey.Enter:
                 case ConsoleKey.Spacebar:
@@ -94,6 +91,7 @@
                         view.ErrorMessage = e.Message;
                     }
                     view.Draw();
+                    view.DrawFooter();
                     break;
             }
         }
@@ -107,33 +105,39 @@
         /// </remarks>
         private void Player2()
         {
-            Random random = new Random();
-            int x = 0, y = 0;
-            bool isFound = false;
-            while(!isFound)
-            {
-                x = random.Next(0, Board.WIDTH);
-                y = random.Next(0, Board.HEIGHT);
-                if (board[x, y] == Cell.Untaken)
-                    isFound = true;
-            }
-
             Thread.Sleep(Sleep);
-            int oldX = view.CursorX, oldY = view.CursorY;
-            view.Draw(view.CursorX = x, view.CursorY = y);
-            view.Draw(oldX, oldY);
+            (int x, int y) = FreeLocation();
+            Goto(x, y);
 
             Thread.Sleep(Sleep);
             board[x, y] = Cell.Player2;
             view.Draw(view.CursorX, view.CursorY);
 
             Thread.Sleep(Sleep);
-            oldX = view.CursorX; oldY = view.CursorY;
-            view.CursorX = Board.HORIZONTAL_CENTER;
-            view.CursorY = Board.VERTICAL_CENTER;
-            view.Draw(view.CursorX, view.CursorY);
-            view.Draw(oldX, oldY);
+            Goto(Board.HORIZONTAL_CENTER, Board.VERTICAL_CENTER);
             view.IsPlayer1Turn = true;
+        }
+
+        private (int x, int y) FreeLocation()
+        {
+            Random random = new Random();
+            int x = 0, y = 0;
+            bool isFound = false;
+            while (!isFound)
+            {
+                x = random.Next(0, Board.WIDTH);
+                y = random.Next(0, Board.HEIGHT);
+                if (board[x, y] == Cell.Untaken)
+                    isFound = true;
+            }
+            return (x, y);
+        }
+
+        private void Goto(int x, int y)
+        {
+            int oldX = view.CursorX, oldY = view.CursorY;
+            view.Draw(view.CursorX = x, view.CursorY = y);
+            view.Draw(oldX, oldY);
         }
     }
 }
