@@ -13,5 +13,8 @@
 
         /// <summary>The second player (typically 'O') has achieved three in a row.</summary>
         Player2_won,
+
+        /// <summary>The board is full and no player has won.</summary>
+        Draw,
     }
 }

@@ -11,6 +11,8 @@
         /// <summary>The vertical size of the board.</summary>
         public static int HEIGHT { get; } = 3;
 
+        private int freeCells = WIDTH * HEIGHT;
+
         /// <summary>
         /// The horizontal index of the board's center cell.
         /// </summary>
@@ -47,6 +49,7 @@
                 if (cells[x, y] != Cell.Untaken)
                     throw new ArgumentException($"Cell ({x}, {y}) has already been taken by {cells[x, y]}");
                 cells[x, y] = value;
+                --freeCells;
             }
         }
 
@@ -66,7 +69,7 @@
                 return GetStatus(() => cells[0, 0]);
             if (CheckDiagonal2())
                 return GetStatus(() => cells[0, HEIGHT - 1]);
-            return GameStatus.Pending;
+            return freeCells == 0 ? GameStatus.Draw : GameStatus.Pending;
         }
 
         private bool CheckColumn(int y)
