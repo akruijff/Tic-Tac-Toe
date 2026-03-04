@@ -20,7 +20,12 @@
         public Cell this[int x, int y]
         {
             get => cells[x, y];
-            set => cells[x, y] = value;
+            set
+            {
+                if (cells[x, y] != Cell.Untaken)
+                    throw new ArgumentException($"Cell ({x}, {y}) has already been taken by {cells[x, y]}");
+                cells[x, y] = value;
+            }
         }
     }
 }

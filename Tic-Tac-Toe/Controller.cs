@@ -47,8 +47,16 @@
                     break;
                 case ConsoleKey.Enter:
                 case ConsoleKey.Spacebar:
-                    board[view.CursorX, view.CursorY] = Cell.Player1;
-                    view.IsPlayer1Turn = false;
+                    try
+                    {
+                        board[view.CursorX, view.CursorY] = Cell.Player1;
+                        view.IsPlayer1Turn = false;
+                        view.ErrorMessage = "";
+                    }
+                    catch(ArgumentException e)
+                    {
+                        view.ErrorMessage = e.Message;
+                    }
                     view.Draw();
                     break;
             }
@@ -56,14 +64,24 @@
 
         private void Player2()
         {
-            Thread.Sleep(Sleep);
             Random random = new Random();
-            view.CursorX = random.Next(0, Board.WIDTH - 1);
-            view.CursorY = random.Next(0, Board.HEIGHT - 1);
+            int x = 0, y = 0;
+            bool isFound = false;
+            while(!isFound)
+            {
+                x = random.Next(0, Board.WIDTH);
+                y = random.Next(0, Board.HEIGHT);
+                if (board[x, y] == Cell.Untaken)
+                    isFound = true;
+            }
+
+            Thread.Sleep(Sleep);
+            view.CursorX = x;
+            view.CursorY = y;
             view.Draw();
 
             Thread.Sleep(Sleep);
-            board[view.CursorX, view.CursorY] = Cell.Player2;
+            board[x, y] = Cell.Player2;
             view.Draw();
 
             Thread.Sleep(Sleep);

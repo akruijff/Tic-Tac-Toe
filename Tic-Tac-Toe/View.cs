@@ -13,6 +13,7 @@
             get;
             set => field = Math.Clamp(value, 0, Board.HEIGHT - 1);
         } = 1;
+        public string ErrorMessage { get; internal set; } = "";
 
         /// <summary>
         /// Draws the board and cursor to the console.
@@ -56,7 +57,9 @@
             }
             Console.WriteLine("+-------+");
             Console.WriteLine("");
-            if (IsPlayer1Turn)
+            if (ErrorMessage.Length != 0)
+                Console.WriteLine(ErrorMessage);
+            else if (IsPlayer1Turn)
                 Console.WriteLine("Your move");
             else
                 Console.WriteLine("Player 2 turn");
