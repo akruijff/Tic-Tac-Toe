@@ -63,23 +63,23 @@
                     break;
                 case ConsoleKey.W:
                 case ConsoleKey.UpArrow:
-                    --view.CursorY;
-                    view.Draw();
+                    view.Draw(view.CursorX, view.CursorY--);
+                    view.Draw(view.CursorX, view.CursorY);
                     break;
                 case ConsoleKey.S:
                 case ConsoleKey.DownArrow:
-                    ++view.CursorY;
-                    view.Draw();
+                    view.Draw(view.CursorX, view.CursorY++);
+                    view.Draw(view.CursorX, view.CursorY);
                     break;
                 case ConsoleKey.A:
                 case ConsoleKey.LeftArrow:
-                    --view.CursorX;
-                    view.Draw();
+                    view.Draw(view.CursorX--, view.CursorY);
+                    view.Draw(view.CursorX, view.CursorY);
                     break;
                 case ConsoleKey.D:
                 case ConsoleKey.RightArrow:
-                    ++view.CursorX;
-                    view.Draw();
+                    view.Draw(view.CursorX++, view.CursorY);
+                    view.Draw(view.CursorX, view.CursorY);
                     break;
                 case ConsoleKey.Enter:
                 case ConsoleKey.Spacebar:
@@ -119,19 +119,21 @@
             }
 
             Thread.Sleep(Sleep);
-            view.CursorX = x;
-            view.CursorY = y;
-            view.Draw();
+            int oldX = view.CursorX, oldY = view.CursorY;
+            view.Draw(view.CursorX = x, view.CursorY = y);
+            view.Draw(oldX, oldY);
 
             Thread.Sleep(Sleep);
             board[x, y] = Cell.Player2;
-            view.Draw();
+            view.Draw(view.CursorX, view.CursorY);
 
             Thread.Sleep(Sleep);
+            oldX = view.CursorX; oldY = view.CursorY;
             view.CursorX = Board.HORIZONTAL_CENTER;
             view.CursorY = Board.VERTICAL_CENTER;
+            view.Draw(view.CursorX, view.CursorY);
+            view.Draw(oldX, oldY);
             view.IsPlayer1Turn = true;
-            view.Draw();
         }
     }
 }

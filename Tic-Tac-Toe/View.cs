@@ -30,6 +30,10 @@
         /// </summary>
         public string ErrorMessage { get; internal set; } = "";
 
+        private const int SPACING_X_FACTOR = 2;
+        private const int OFFSET_X = 2;
+        private const int OFFSET_Y = 3;
+
         /// <summary>
         /// Draws the board and cursor to the console.
         /// </summary>
@@ -45,28 +49,7 @@
                 for (int x = 0; x < Board.WIDTH; ++x)
                 {
                     Console.Write(" ");
-                    if (x == CursorX && y == CursorY)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.BackgroundColor = ConsoleColor.White;
-                    }
-                    switch(board[x, y])
-                    {
-                        case Cell.Player1:
-                            Console.Write("X");
-                            break;
-                        case Cell.Player2:
-                            Console.Write("O");
-                            break;
-                        default:
-                            Console.Write("#");
-                            break;
-                    }
-                    if (x == CursorX && y == CursorY)
-                    {
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.BackgroundColor = ConsoleColor.Black;
-                    }
+                    DrawCell(x, y);
                 }
                 Console.WriteLine(" |");
             }
@@ -80,6 +63,48 @@
                 Console.WriteLine("Player 2 turn");
             Console.WriteLine("");
             Console.WriteLine("Esc = exit | Array keys or AWSD = move | Enter or space = mark cell");
+        }
+
+        /// <summary>
+        /// Updates a single cell on the console display by calculating its absolute position.
+        /// </summary>
+        /// <param name="x">The horizontal board coordinate.</param>
+        /// <param name="y">The vertical board coordinate.</param>
+        /// <remarks>
+        /// This method uses <see cref="Console.SetCursorPosition"/> to prevent full screen flickering 
+        /// during cursor movement.
+        /// </remarks>
+        public void Draw(int x, int y)
+        {
+            int cx = SPACING_X_FACTOR * x + OFFSET_X, cy = y + OFFSET_Y;
+            Console.SetCursorPosition(cx, cy);
+            DrawCell(x, y);
+        }
+
+        private void DrawCell(int x, int y)
+        {
+            if (x == CursorX && y == CursorY)
+            {
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.BackgroundColor = ConsoleColor.White;
+            }
+            switch (board[x, y])
+            {
+                case Cell.Player1:
+                    Console.Write("X");
+                    break;
+                case Cell.Player2:
+                    Console.Write("O");
+                    break;
+                default:
+                    Console.Write("#");
+                    break;
+            }
+            if (x == CursorX && y == CursorY)
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Black;
+            }
         }
     }
 }
