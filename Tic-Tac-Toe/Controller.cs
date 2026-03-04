@@ -8,12 +8,20 @@
         public void Start()
         {
             view.Draw();
-            while (!isAbortRequested)
+            while (!isAbortRequested && board.Status() == GameStatus.Pending)
             {
                 if (view.IsPlayer1Turn)
                     Player1();
                 else
                     Player2();
+            }
+            if (board.Status() != GameStatus.Pending)
+            {
+                Console.WriteLine();
+                Console.WriteLine("GAME OVER");
+                Console.WriteLine();
+                string s = board.Status() == GameStatus.Player1_won ? "1" : "2";
+                Console.WriteLine($"Player {s} won!");
             }
         }
 
