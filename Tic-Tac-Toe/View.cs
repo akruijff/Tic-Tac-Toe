@@ -1,17 +1,16 @@
 ﻿namespace Tic_Tac_Toe
 {
-    public class View
+    public class View(Board board)
     {
-        private const int WIDTH = 3, HEIGHT = 3;
         public int CursorX 
         { 
             get;
-            set => field = Math.Clamp(value, 0, WIDTH - 1);
+            set => field = Math.Clamp(value, 0, Board.WIDTH - 1);
         } = 1;
         public int CursorY
         {
             get;
-            set => field = Math.Clamp(value, 0, HEIGHT - 1);
+            set => field = Math.Clamp(value, 0, Board.HEIGHT - 1);
         } = 1;
 
         /// <summary>
@@ -23,10 +22,10 @@
             Console.WriteLine("Welkom to Tic Tac Toe");
             Console.WriteLine("");
             Console.WriteLine("+-------+");
-            for (int y = 0; y < HEIGHT; ++y)
+            for (int y = 0; y < Board.HEIGHT; ++y)
             {
                 Console.Write("|");
-                for (int x = 0; x < WIDTH; ++x)
+                for (int x = 0; x < Board.WIDTH; ++x)
                 {
                     Console.Write(" ");
                     if (x == CursorX && y == CursorY)
@@ -34,7 +33,15 @@
                         Console.ForegroundColor = ConsoleColor.Black;
                         Console.BackgroundColor = ConsoleColor.White;
                     }
-                    Console.Write("#");
+                    switch(board[x, y])
+                    {
+                        case Cell.Player1:
+                            Console.Write("X");
+                            break;
+                        default:
+                            Console.Write("#");
+                            break;
+                    }
                     if (x == CursorX && y == CursorY)
                     {
                         Console.ForegroundColor = ConsoleColor.White;
@@ -47,7 +54,7 @@
             Console.WriteLine("");
             Console.WriteLine("Your move");
             Console.WriteLine("");
-            Console.WriteLine("Esc = exit | Array keys or AWSD = move");
+            Console.WriteLine("Esc = exit | Array keys or AWSD = move | Enter or space = mark cell");
         }
     }
 }

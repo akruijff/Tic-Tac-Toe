@@ -4,8 +4,9 @@
     {
         static void Main(string[] args)
         {
-            View view = new();
-            Controller controller = new(view);
+            Board board = new();
+            View view = new(board);
+            Controller controller = new(board, view);
             controller.Start();
         }
     }

@@ -1,6 +1,6 @@
 ﻿namespace Tic_Tac_Toe
 {
-    public class Controller(View view)
+    public class Controller(Board board, View view)
     {
         public void Start()
         {
@@ -32,6 +32,11 @@
                     case ConsoleKey.D:
                     case ConsoleKey.RightArrow:
                         ++view.CursorX;
+                        view.Draw();
+                        break;
+                    case ConsoleKey.Enter:
+                    case ConsoleKey.Spacebar:
+                        board[view.CursorX, view.CursorY] = Cell.Player1;
                         view.Draw();
                         break;
                 }
