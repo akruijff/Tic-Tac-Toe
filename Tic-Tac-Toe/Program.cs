@@ -5,8 +5,10 @@
         static void Main(string[] args)
         {
             View view = new();
-            view.Draw();
             Controller controller = new();
+
+            view.Draw();
+            controller.Start();
         }
     }
 }
