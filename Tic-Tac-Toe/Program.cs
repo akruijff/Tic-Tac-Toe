@@ -6,6 +6,7 @@
         {
             View view = new();
             view.Draw();
+            Controller controller = new();
         }
     }
 }
