@@ -2,17 +2,32 @@
 {
     public class View(Board board)
     {
+        /// <summary>
+        /// Indicates whether it is currently Player 1's turn.
+        /// </summary>
         public bool IsPlayer1Turn = true;
+
+        /// <summary>
+        /// Gets or sets the horizontal cursor position, clamped between 0 and the board's <see cref="Board.WIDTH"/> - 1.
+        /// </summary>
         public int CursorX 
         { 
             get;
             set => field = Math.Clamp(value, 0, Board.WIDTH - 1);
         } = 1;
+
+        /// <summary>
+        /// Gets or sets the vertical cursor position, clamped between 0 and the board's <see cref="Board.HEIGHT"/> - 1.
+        /// </summary>
         public int CursorY
         {
             get;
             set => field = Math.Clamp(value, 0, Board.HEIGHT - 1);
         } = 1;
+
+        /// <summary>
+        /// Gets or sets an error message to be displayed below the board (e.g., for invalid moves).
+        /// </summary>
         public string ErrorMessage { get; internal set; } = "";
 
         /// <summary>

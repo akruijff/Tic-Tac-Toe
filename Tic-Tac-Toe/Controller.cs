@@ -1,10 +1,28 @@
 ﻿namespace Tic_Tac_Toe
 {
+    /// <summary>
+    /// Coordinates the game flow between the <see cref="Board"/> logic and the <see cref="View"/> display.
+    /// </summary>
+    /// <param name="board">The game board instance containing the grid and win logic.</param>
+    /// <param name="view">The display instance for rendering the UI.</param>
     public class Controller(Board board, View view)
     {
+        /// <summary>
+        /// Indicates if the user has requested to quit the game.
+        /// </summary>
         private bool isAbortRequested = false;
+
+        /// <summary>
+        /// The delay in milliseconds used for AI "thinking" animations.
+        /// </summary>
         private const int Sleep = 500;
 
+        /// <summary>
+        /// Starts the main game loop, alternating between the human player and the AI.
+        /// </summary>
+        /// <remarks>
+        /// The loop continues until a winner is found, the board is full, or the user presses Escape.
+        /// </remarks>
         public void Start()
         {
             view.Draw();
@@ -25,6 +43,9 @@
             }
         }
 
+        /// <summary>
+        /// Handles human input for Player 1, including movement and cell marking.
+        /// </summary>
         private void Player1()
         {
             ConsoleKey key = Console.ReadKey(true).Key;
@@ -70,6 +91,13 @@
             }
         }
 
+        /// <summary>
+        /// Executes a simple random AI move for Player 2.
+        /// </summary>
+        /// <remarks>
+        /// This method simulates "thinking" by updating the <see cref="View.CursorX"/> 
+        /// and <see cref="View.CursorY"/> before marking the cell.
+        /// </remarks>
         private void Player2()
         {
             Random random = new Random();

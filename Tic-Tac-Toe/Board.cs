@@ -1,10 +1,24 @@
 ﻿namespace Tic_Tac_Toe
 {
+    /// <summary>
+    /// Manages the 3x3 game board, handles move validation, and determines the game status.
+    /// </summary>
     public class Board()
     {
+        /// <summary>The horizontal size of the board.</summary>
         public static int WIDTH { get; } = 3;
+
+        /// <summary>The vertical size of the board.</summary>
         public static int HEIGHT { get; } = 3;
+
+        /// <summary>
+        /// The horizontal index of the board's center cell.
+        /// </summary>
         public static int HORIZONTAL_CENTER { get; } = 1;
+
+        /// <summary>
+        /// The vertical index of the board's center cell.
+        /// </summary>
         public static int VERTICAL_CENTER { get; } = 1;
 
         private readonly Cell[,] cells = SetAll(new Cell[WIDTH, HEIGHT], Cell.Untaken);
@@ -17,6 +31,12 @@
             return cells;
         }
 
+        /// <summary>
+        /// Gets or sets the <see cref="Cell"/> state at the specified coordinates.
+        /// </summary>
+        /// <param name="x">The horizontal index.</param>
+        /// <param name="y">The vertical index.</param>
+        /// <exception cref="ArgumentException">Thrown if the game is over or the cell is already occupied.</exception>
         public Cell this[int x, int y]
         {
             get => cells[x, y];
@@ -30,6 +50,10 @@
             }
         }
 
+        /// <summary>
+        /// Evaluates the board to check if a player has won or if the game is still pending.
+        /// </summary>
+        /// <returns>The current <see cref="GameStatus"/>.</returns>
         internal GameStatus Status()
         {
             for (int x = 0; x < HEIGHT; ++x)
@@ -83,8 +107,9 @@
                 Cell.Player1 => GameStatus.Player1_won,
                 Cell.Player2 => GameStatus.Player2_won,
                 _ => GameStatus.Pending,
-            };        
+            };
 
+        /// <returns>A string such as "Pending", "Player1_won", or "Player2_won".</returns>
         public override string ToString() => Status().ToString();
     }
 }
