@@ -35,12 +35,18 @@
         private const int OFFSET_Y = 3;
 
         /// <summary>
-        /// Renders the board and cursor to the console.
+        /// Renders the game interface, including the header, the board grid, and all cell
+        /// contents.
         /// </summary>
+        /// <remarks>
+        /// This method clears the console and draws the entire static structure. 
+        /// Use this for the initial render or when a complete refresh is required.
+        /// For incremental updates, use the specialized Draw(x, y) or DrawFooter() methods.
+        /// </remarks>
         public void Draw()
         {
             Console.Clear();
-            Console.WriteLine("Welkom to Tic Tac Toe");
+            Console.WriteLine("Welcome to Tic Tac Toe");
             Console.WriteLine("");
             Console.WriteLine("+-------+");
             for (int y = 0; y < Board.HEIGHT; ++y)
