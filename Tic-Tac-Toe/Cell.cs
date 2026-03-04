@@ -3,6 +3,7 @@
     public enum Cell
     {
         Player1,
+        Player2,
         Untaken,
     }
 }

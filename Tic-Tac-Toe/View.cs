@@ -2,6 +2,7 @@
 {
     public class View(Board board)
     {
+        public bool IsPlayer1Turn = true;
         public int CursorX 
         { 
             get;
@@ -38,6 +39,9 @@
                         case Cell.Player1:
                             Console.Write("X");
                             break;
+                        case Cell.Player2:
+                            Console.Write("O");
+                            break;
                         default:
                             Console.Write("#");
                             break;
@@ -52,7 +56,10 @@
             }
             Console.WriteLine("+-------+");
             Console.WriteLine("");
-            Console.WriteLine("Your move");
+            if (IsPlayer1Turn)
+                Console.WriteLine("Your move");
+            else
+                Console.WriteLine("Player 2 turn");
             Console.WriteLine("");
             Console.WriteLine("Esc = exit | Array keys or AWSD = move | Enter or space = mark cell");
         }

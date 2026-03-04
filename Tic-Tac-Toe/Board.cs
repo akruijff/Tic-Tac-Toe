@@ -4,6 +4,8 @@
     {
         public static int WIDTH { get; } = 3;
         public static int HEIGHT { get; } = 3;
+        public static int HORIZONTAL_CENTER { get; } = 1;
+        public static int VERTICAL_CENTER { get; } = 1;
 
         private readonly Cell[,] cells = SetAll(new Cell[WIDTH, HEIGHT], Cell.Untaken);
 
