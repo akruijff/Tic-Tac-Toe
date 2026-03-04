@@ -5,9 +5,7 @@
         static void Main(string[] args)
         {
             View view = new();
-            Controller controller = new();
-
-            view.Draw();
+            Controller controller = new(view);
             controller.Start();
         }
     }

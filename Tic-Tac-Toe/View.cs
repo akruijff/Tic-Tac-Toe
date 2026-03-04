@@ -2,8 +2,17 @@
 {
     public class View
     {
-        private const int width = 3, height = 3;
-        private const int cursorX = 1, cursorY = 1;
+        private const int WIDTH = 3, HEIGHT = 3;
+        public int CursorX 
+        { 
+            get;
+            set => field = Math.Clamp(value, 0, WIDTH - 1);
+        } = 1;
+        public int CursorY
+        {
+            get;
+            set => field = Math.Clamp(value, 0, HEIGHT - 1);
+        } = 1;
 
         /// <summary>
         /// Draws the board and cursor to the console.
@@ -14,19 +23,19 @@
             Console.WriteLine("Welkom to Tic Tac Toe");
             Console.WriteLine("");
             Console.WriteLine("+-------+");
-            for (int y = 0; y < height; ++y)
+            for (int y = 0; y < HEIGHT; ++y)
             {
                 Console.Write("|");
-                for (int x = 0; x < width; ++x)
+                for (int x = 0; x < WIDTH; ++x)
                 {
                     Console.Write(" ");
-                    if (x == cursorX && y == cursorY)
+                    if (x == CursorX && y == CursorY)
                     {
                         Console.ForegroundColor = ConsoleColor.Black;
                         Console.BackgroundColor = ConsoleColor.White;
                     }
                     Console.Write("#");
-                    if (x == cursorX && y == cursorY)
+                    if (x == CursorX && y == CursorY)
                     {
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.BackgroundColor = ConsoleColor.Black;
@@ -38,7 +47,7 @@
             Console.WriteLine("");
             Console.WriteLine("Your move");
             Console.WriteLine("");
-            Console.WriteLine("Esc = exit");
+            Console.WriteLine("Esc = exit | Array keys or AWSD = move");
         }
     }
 }
