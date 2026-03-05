@@ -77,15 +77,15 @@
             for (int i = 1; i < WIDTH; ++i)
                 if (cells[0, y] != cells[i, y])
                     return false;
-            return true;
+            return cells[0, y] != Cell.Untaken;
         }
 
         private bool CheckRow(int x)
         {
-            for (int i = 1; i < WIDTH; ++i)
+            for (int i = 1; i < HEIGHT; ++i)
                 if (cells[x, 0] != cells[x, i])
                     return false;
-            return true;
+            return cells[x, 0] != Cell.Untaken;
         }
 
         private bool CheckDiagonal1()
@@ -93,7 +93,7 @@
             for (int i = 1; i < WIDTH; ++i)
                 if (cells[0, 0] != cells[i, i])
                     return false;
-            return true;
+            return cells[0, 0] != Cell.Untaken;
         }
 
         private bool CheckDiagonal2()
@@ -101,7 +101,7 @@
             for (int i = 1; i < WIDTH; ++i)
                 if (cells[0, HEIGHT - 1] != cells[i, HEIGHT - 1 - i])
                     return false;
-            return true;
+            return cells[0, HEIGHT - 1] != Cell.Untaken;
         }
 
         private static GameStatus GetStatus(Func<Cell> func) =>
