@@ -52,7 +52,7 @@
         /// <returns>The current <see cref="GameStatus"/>.</returns>
         internal GameStatus Status()
         {
-            for (int x = 0; x < HEIGHT; ++x)
+            for (int x = 0; x < WIDTH; ++x)
                 if (CheckRow(x))
                     return GetStatus(cells[x, 0]);
             for (int y = 0; y < HEIGHT; ++y)
