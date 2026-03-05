@@ -54,14 +54,14 @@
         {
             for (int x = 0; x < HEIGHT; ++x)
                 if (CheckRow(x))
-                    return GetStatus(() => cells[x, 0]);
+                    return GetStatus(cells[x, 0]);
             for (int y = 0; y < HEIGHT; ++y)
                 if (CheckColumn(y))
-                    return GetStatus(() => cells[0, y]);
+                    return GetStatus(cells[0, y]);
             if (CheckDiagonal1())
-                return GetStatus(() => cells[0, 0]);
+                return GetStatus(cells[0, 0]);
             if (CheckDiagonal2())
-                return GetStatus(() => cells[0, HEIGHT - 1]);
+                return GetStatus(cells[0, HEIGHT - 1]);
             return freeCells == 0 ? GameStatus.Draw : GameStatus.Pending;
         }
 
@@ -97,13 +97,13 @@
             return cells[0, HEIGHT - 1] != Cell.Untaken;
         }
 
-        private static GameStatus GetStatus(Func<Cell> func) =>
-            func.Invoke() switch
+        private GameStatus GetStatus(Cell cell) =>
+            cell switch
             {
                 Cell.Player1 => GameStatus.Player1_won,
                 Cell.Player2 => GameStatus.Player2_won,
                 _ => GameStatus.Pending,
-            };
+            };        
 
         /// <summary>
         /// Places a mark on the board at the specified coordinates for the current player.
