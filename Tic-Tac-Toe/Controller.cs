@@ -29,7 +29,7 @@
             view.DrawFooter();
             while (!isAbortRequested && board.Status() == GameStatus.Pending)
             {
-                if (view.IsPlayer1Turn)
+                if (board.IsPlayer1Turn)
                     Player1();
                 else
                     Player2();
@@ -72,8 +72,7 @@
                 case ConsoleKey.Spacebar:
                     try
                     {
-                        board[view.CursorX, view.CursorY] = Cell.Player1;
-                        view.IsPlayer1Turn = false;
+                        board.MarkCell(view.CursorX, view.CursorY);
                         view.ErrorMessage = "";
                     }
                     catch(ArgumentException e)
@@ -100,12 +99,11 @@
             Goto(x, y);
 
             Thread.Sleep(Sleep);
-            board[x, y] = Cell.Player2;
+            board.MarkCell(x, y);
             view.Draw(view.CursorX, view.CursorY);
 
             Thread.Sleep(Sleep);
             Goto(Board.HORIZONTAL_CENTER, Board.VERTICAL_CENTER);
-            view.IsPlayer1Turn = true;
         }
 
         private (int x, int y) FreeLocation()

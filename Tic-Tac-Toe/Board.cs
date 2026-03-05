@@ -5,6 +5,11 @@
     /// </summary>
     public class Board()
     {
+        /// <summary>
+        /// Indicates whether it is currently Player 1's turn.
+        /// </summary>
+        public bool IsPlayer1Turn { get; private set; } = true;
+
         /// <summary>The horizontal size of the board.</summary>
         public static int WIDTH { get; } = 3;
 
@@ -39,19 +44,7 @@
         /// <param name="x">The horizontal index.</param>
         /// <param name="y">The vertical index.</param>
         /// <exception cref="ArgumentException">Thrown if the game is over or the cell is already occupied.</exception>
-        public Cell this[int x, int y]
-        {
-            get => cells[x, y];
-            set
-            {
-                if (Status() != GameStatus.Pending)
-                    throw new ArgumentException("GAME OVER!");
-                if (cells[x, y] != Cell.Untaken)
-                    throw new ArgumentException($"Cell ({x}, {y}) has already been taken by {cells[x, y]}");
-                cells[x, y] = value;
-                --freeCells;
-            }
-        }
+        public Cell this[int x, int y] { get => cells[x, y]; }
 
         /// <summary>
         /// Evaluates the board to check if a player has won or if the game is still pending.
@@ -111,6 +104,22 @@
                 Cell.Player2 => GameStatus.Player2_won,
                 _ => GameStatus.Pending,
             };
+
+        /// <summary>
+        /// Places a mark on the board at the specified coordinates for the current player.
+        /// </summary>
+        /// <param name="x">The horizontal index (0 to <see cref="WIDTH"/> - 1).</param>
+        /// <param name="y">The vertical index (0 to <see cref="HEIGHT"/> - 1).</param>
+        public void MarkCell(int x, int y)
+        {
+            if (Status() != GameStatus.Pending)
+                throw new ArgumentException("GAME OVER!");
+            if (cells[x, y] != Cell.Untaken)
+                throw new ArgumentException($"Cell ({x}, {y}) has already been taken by {cells[x, y]}");
+            cells[x, y] = IsPlayer1Turn ? Cell.Player1 : Cell.Player2;
+            --freeCells;
+            IsPlayer1Turn = !IsPlayer1Turn;
+        }
 
         /// <returns>A string such as "Pending", "Player1_won", or "Player2_won".</returns>
         public override string ToString() => Status().ToString();

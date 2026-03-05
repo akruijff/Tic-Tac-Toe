@@ -3,11 +3,6 @@
     public class View(Board board)
     {
         /// <summary>
-        /// Indicates whether it is currently Player 1's turn.
-        /// </summary>
-        public bool IsPlayer1Turn = true;
-
-        /// <summary>
         /// Gets or sets the horizontal cursor position, clamped between 0 and the board's <see cref="Board.WIDTH"/> - 1.
         /// </summary>
         public int CursorX 
@@ -75,7 +70,7 @@
         {
             if (ErrorMessage.Length != 0)
                 Console.WriteLine(ErrorMessage);
-            else if (IsPlayer1Turn)
+            else if (board.IsPlayer1Turn)
                 Console.WriteLine("Your move");
             else
                 Console.WriteLine("Player 2 turn");
