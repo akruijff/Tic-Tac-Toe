@@ -1,28 +1,28 @@
 ﻿namespace Tic_Tac_Toe
 {
     /// <summary>
-    /// Coordinates the game flow between the <see cref="Board"/> logic and the <see cref="View"/> display.
+    /// Coordinates the game flow between the <see cref="Logic"/> logic and the <see cref="View"/> display.
     /// </summary>
     /// <param name="board">The game board instance containing the grid and win logic.</param>
     /// <param name="view">The display instance for rendering the UI.</param>
-    public class UI(Board board)
+    public class UI(Logic board)
     {
         /// <summary>
-        /// Gets or sets the horizontal cursor position, clamped between 0 and the board's <see cref="Board.WIDTH"/> - 1.
+        /// Gets or sets the horizontal cursor position, clamped between 0 and the board's <see cref="Logic.WIDTH"/> - 1.
         /// </summary>
         public int CursorX
         {
             get;
-            set => field = Math.Clamp(value, 0, Board.WIDTH - 1);
+            set => field = Math.Clamp(value, 0, Logic.WIDTH - 1);
         } = 1;
 
         /// <summary>
-        /// Gets or sets the vertical cursor position, clamped between 0 and the board's <see cref="Board.HEIGHT"/> - 1.
+        /// Gets or sets the vertical cursor position, clamped between 0 and the board's <see cref="Logic.HEIGHT"/> - 1.
         /// </summary>
         public int CursorY
         {
             get;
-            set => field = Math.Clamp(value, 0, Board.HEIGHT - 1);
+            set => field = Math.Clamp(value, 0, Logic.HEIGHT - 1);
         } = 1;
 
         /// <summary>
@@ -130,7 +130,7 @@
             Draw(CursorX, CursorY);
 
             Thread.Sleep(Sleep);
-            Goto(Board.HORIZONTAL_CENTER, Board.VERTICAL_CENTER);
+            Goto(Logic.HORIZONTAL_CENTER, Logic.VERTICAL_CENTER);
         }
 
         private (int x, int y) FreeLocation()
@@ -140,8 +140,8 @@
             bool isFound = false;
             while (!isFound)
             {
-                x = random.Next(0, Board.WIDTH);
-                y = random.Next(0, Board.HEIGHT);
+                x = random.Next(0, Logic.WIDTH);
+                y = random.Next(0, Logic.HEIGHT);
                 if (board[x, y] == Cell.Untaken)
                     isFound = true;
             }
@@ -170,10 +170,10 @@
             Console.WriteLine("Welcome to Tic Tac Toe");
             Console.WriteLine("");
             Console.WriteLine("+-------+");
-            for (int y = 0; y < Board.HEIGHT; ++y)
+            for (int y = 0; y < Logic.HEIGHT; ++y)
             {
                 Console.Write("|");
-                for (int x = 0; x < Board.WIDTH; ++x)
+                for (int x = 0; x < Logic.WIDTH; ++x)
                 {
                     Console.Write(" ");
                     DrawCell(x, y);

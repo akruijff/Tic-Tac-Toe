@@ -5,7 +5,7 @@
         static void Main(string[] args)
         {
             Console.CursorVisible = false;
-            Board board = new();
+            Logic board = new();
             UI controller = new(board);
             controller.Start();
         }

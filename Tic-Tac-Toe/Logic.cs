@@ -3,7 +3,7 @@
     /// <summary>
     /// Manages the 3x3 game board, handles move validation, and determines the game status.
     /// </summary>
-    public class Board()
+    public class Logic()
     {
         /// <summary>
         /// Indicates whether it is currently Player 1's turn.
