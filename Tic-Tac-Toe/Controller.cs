@@ -37,17 +37,7 @@
             if (board.Status() != GameStatus.Pending)
             {
                 view.Draw();
-                Console.WriteLine("GAME OVER");
-                Console.WriteLine();
-                string s = board.Status() switch
-                {
-                    GameStatus.Pending => "You're aborted the game.",
-                    GameStatus.Player1_won => "Player 1 won!",
-                    GameStatus.Player2_won => "Player 2 won!",
-                    GameStatus.Draw => "It was a draw!",
-                    _ => throw new NotImplementedException()
-                };
-                Console.WriteLine(s);
+                view.DrawGameOver();
             }
         }
 
