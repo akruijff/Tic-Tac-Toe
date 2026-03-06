@@ -41,6 +41,11 @@
         private const int Sleep = 500;
 
         /// <summary>
+        /// Indicattes this is the first time the screen is drawn.
+        /// </summary>
+        private bool firstTimeDrawn = true;
+
+        /// <summary>
         /// Starts the main game loop, alternating between the human player and the AI.
         /// </summary>
         /// <remarks>
@@ -162,7 +167,12 @@
         /// </remarks>
         public void Draw()
         {
-            Console.Clear();
+            if (firstTimeDrawn)
+                Console.Clear();
+            else
+                Console.SetCursorPosition(0, 0);
+            firstTimeDrawn = false;
+
             Console.WriteLine("Welcome to Tic Tac Toe");
             Console.WriteLine("");
             Console.WriteLine("+-------+");
