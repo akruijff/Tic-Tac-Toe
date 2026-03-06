@@ -13,7 +13,7 @@
         public int CursorX
         {
             get;
-            set => field = Math.Clamp(value, 0, Logic.WIDTH - 1);
+            set => field = Math.Clamp(value, Logic.LEFT_COLUMN, Logic.RIGHT_COLUMN);
         } = 1;
 
         /// <summary>
@@ -22,7 +22,7 @@
         public int CursorY
         {
             get;
-            set => field = Math.Clamp(value, 0, Logic.HEIGHT - 1);
+            set => field = Math.Clamp(value, Logic.TOP_ROW, Logic.BOTTOM_ROW);
         } = 1;
 
         /// <summary>
