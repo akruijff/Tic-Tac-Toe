@@ -30,10 +30,6 @@
         /// </summary>
         public string ErrorMessage { get; internal set; } = "";
 
-        private const int SPACING_X_FACTOR = 2;
-        private const int OFFSET_X = 2;
-        private const int OFFSET_Y = 3;
-
         /// <summary>
         /// Indicates if the user has requested to quit the game.
         /// </summary>
@@ -81,19 +77,27 @@
                     break;
                 case ConsoleKey.W:
                 case ConsoleKey.UpArrow:
-                    Goto(CursorX, CursorY - 1);
+                    CursorY = Math.Clamp(CursorY - 1, 0, 2);
+                    Draw();
+                    DrawFooter();
                     break;
                 case ConsoleKey.S:
                 case ConsoleKey.DownArrow:
-                    Goto(CursorX, CursorY + 1);
+                    CursorY = Math.Clamp(CursorY + 1, 0, 2);
+                    Draw();
+                    DrawFooter();
                     break;
                 case ConsoleKey.A:
                 case ConsoleKey.LeftArrow:
-                    Goto(CursorX - 1, CursorY);
+                    CursorX = Math.Clamp(CursorX - 1, 0, 2);
+                    Draw();
+                    DrawFooter();
                     break;
                 case ConsoleKey.D:
                 case ConsoleKey.RightArrow:
-                    Goto(CursorX + 1, CursorY);
+                    CursorX = Math.Clamp(CursorX + 1, 0, 2);
+                    Draw();
+                    DrawFooter();
                     break;
                 case ConsoleKey.Enter:
                 case ConsoleKey.Spacebar:
@@ -122,15 +126,16 @@
         private void Player2()
         {
             Thread.Sleep(Sleep);
-            (int x, int y) = FreeLocation();
-            Goto(x, y);
+            (CursorX, CursorY) = FreeLocation();
 
             Thread.Sleep(Sleep);
-            board.MarkCell(x, y);
-            Draw(CursorX, CursorY);
+            board.MarkCell(CursorX, CursorY);
+            Draw();
 
             Thread.Sleep(Sleep);
-            Goto(Logic.HORIZONTAL_CENTER, Logic.VERTICAL_CENTER);
+            CursorX = Logic.HORIZONTAL_CENTER;
+            CursorY = Logic.VERTICAL_CENTER;
+            Draw();
         }
 
         private (int x, int y) FreeLocation()
@@ -146,13 +151,6 @@
                     isFound = true;
             }
             return (x, y);
-        }
-
-        private void Goto(int x, int y)
-        {
-            int oldX = CursorX, oldY = CursorY;
-            Draw(CursorX = x, CursorY = y);
-            Draw(oldX, oldY);
         }
 
         /// <summary>
@@ -228,22 +226,6 @@
                 Console.WriteLine("Player 2 turn");
             Console.WriteLine("");
             Console.WriteLine("Esc = exit | Array keys or AWSD = move | Enter or space = mark cell");
-        }
-
-        /// <summary>
-        /// Updates a single cell on the console display by calculating its absolute position.
-        /// </summary>
-        /// <param name="x">The horizontal board coordinate.</param>
-        /// <param name="y">The vertical board coordinate.</param>
-        /// <remarks>
-        /// This method uses <see cref="Console.SetCursorPosition"/> to prevent full screen flickering 
-        /// during cursor movement.
-        /// </remarks>
-        public void Draw(int x, int y)
-        {
-            int cx = SPACING_X_FACTOR * x + OFFSET_X, cy = y + OFFSET_Y;
-            Console.SetCursorPosition(cx, cy);
-            DrawCell(x, y);
         }
 
         internal void DrawGameOver()
