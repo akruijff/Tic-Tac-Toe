@@ -77,25 +77,25 @@
                     break;
                 case ConsoleKey.W:
                 case ConsoleKey.UpArrow:
-                    CursorY = Math.Clamp(CursorY - 1, 0, 2);
+                    CursorY = Math.Clamp(CursorY - 1, Logic.TOP_ROW, Logic.BOTTOM_ROW);
                     Draw();
                     DrawFooter();
                     break;
                 case ConsoleKey.S:
                 case ConsoleKey.DownArrow:
-                    CursorY = Math.Clamp(CursorY + 1, 0, 2);
+                    CursorY = Math.Clamp(CursorY + 1, Logic.TOP_ROW, Logic.BOTTOM_ROW);
                     Draw();
                     DrawFooter();
                     break;
                 case ConsoleKey.A:
                 case ConsoleKey.LeftArrow:
-                    CursorX = Math.Clamp(CursorX - 1, 0, 2);
+                    CursorX = Math.Clamp(CursorX - 1, Logic.LEFT_COLUMN, Logic.RIGHT_COLUMN);
                     Draw();
                     DrawFooter();
                     break;
                 case ConsoleKey.D:
                 case ConsoleKey.RightArrow:
-                    CursorX = Math.Clamp(CursorX + 1, 0, 2);
+                    CursorX = Math.Clamp(CursorX + 1, Logic.LEFT_COLUMN, Logic.RIGHT_COLUMN);
                     Draw();
                     DrawFooter();
                     break;
@@ -133,8 +133,8 @@
             Draw();
 
             Thread.Sleep(Sleep);
-            CursorX = Logic.HORIZONTAL_CENTER;
-            CursorY = Logic.VERTICAL_CENTER;
+            CursorX = Logic.CENTER_COLUMN;
+            CursorY = Logic.CENTER_ROW;
             Draw();
         }
 

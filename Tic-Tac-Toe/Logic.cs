@@ -18,15 +18,12 @@
 
         private int freeCells = WIDTH * HEIGHT;
 
-        /// <summary>
-        /// The horizontal index of the board's center cell.
-        /// </summary>
-        public static int HORIZONTAL_CENTER { get; } = 1;
-
-        /// <summary>
-        /// The vertical index of the board's center cell.
-        /// </summary>
-        public static int VERTICAL_CENTER { get; } = 1;
+        public static int TOP_ROW { get; } = 0;
+        public static int CENTER_ROW { get; } = 1;
+        public static int BOTTOM_ROW { get; } = 2;
+        public static int LEFT_COLUMN { get; } = 0;
+        public static int CENTER_COLUMN { get; } = 1;
+        public static int RIGHT_COLUMN { get; } = 2;
 
         private readonly Cell[,] cells = SetAll(new Cell[WIDTH, HEIGHT], Cell.Untaken);
 
@@ -53,57 +50,70 @@
         internal GameStatus Status()
         {
             for (int x = 0; x < WIDTH; ++x)
-                if (CheckRow(x))
-                    return GetStatus(cells[x, 0]);
+            {
+                GameStatus value = CheckColumn(x);
+                if (value != GameStatus.Pending)
+                    return value;
+            }
+
             for (int y = 0; y < HEIGHT; ++y)
-                if (CheckColumn(y))
-                    return GetStatus(cells[0, y]);
-            if (CheckDiagonal1())
-                return GetStatus(cells[0, 0]);
-            if (CheckDiagonal2())
-                return GetStatus(cells[0, HEIGHT - 1]);
+            {
+                GameStatus value = CheckRow(y);
+                if (value != GameStatus.Pending)
+                    return value;
+            }
+
+            GameStatus value1 = CheckDiagonal1();
+            if (value1 != GameStatus.Pending)
+                return value1;
+
+            GameStatus value2 = CheckDiagonal2();
+            if (value2 != GameStatus.Pending)
+                return value2;
+
             return freeCells == 0 ? GameStatus.Draw : GameStatus.Pending;
         }
 
-        private bool CheckColumn(int y)
+        private GameStatus CheckColumn(int x)
         {
-            for (int i = 1; i < WIDTH; ++i)
-                if (cells[0, y] != cells[i, y])
-                    return false;
-            return cells[0, y] != Cell.Untaken;
+            if (cells[x, TOP_ROW] == cells[x, CENTER_ROW] && 
+                cells[x, CENTER_ROW] == cells[x, BOTTOM_ROW])
+                return CheckWinStatus(x, TOP_ROW);            
+            return GameStatus.Pending;
         }
 
-        private bool CheckRow(int x)
+        private GameStatus CheckRow(int y)
         {
-            for (int i = 1; i < HEIGHT; ++i)
-                if (cells[x, 0] != cells[x, i])
-                    return false;
-            return cells[x, 0] != Cell.Untaken;
+            if (cells[LEFT_COLUMN, y] == cells[CENTER_COLUMN, y] && 
+                cells[CENTER_COLUMN, y] == cells[RIGHT_COLUMN, y])
+                return CheckWinStatus(LEFT_COLUMN, y);
+            return GameStatus.Pending;
         }
 
-        private bool CheckDiagonal1()
+        private GameStatus CheckDiagonal1()
         {
-            for (int i = 1; i < WIDTH; ++i)
-                if (cells[0, 0] != cells[i, i])
-                    return false;
-            return cells[0, 0] != Cell.Untaken;
+            if (cells[LEFT_COLUMN, TOP_ROW] == cells[CENTER_COLUMN, CENTER_ROW] && 
+                cells[CENTER_COLUMN, CENTER_ROW] == cells[RIGHT_COLUMN, BOTTOM_ROW])
+                return CheckWinStatus(LEFT_COLUMN, TOP_ROW);
+            return GameStatus.Pending;
         }
 
-        private bool CheckDiagonal2()
+        private GameStatus CheckDiagonal2()
         {
-            for (int i = 1; i < WIDTH; ++i)
-                if (cells[0, HEIGHT - 1] != cells[i, HEIGHT - 1 - i])
-                    return false;
-            return cells[0, HEIGHT - 1] != Cell.Untaken;
+            if (cells[LEFT_COLUMN, BOTTOM_ROW] == cells[CENTER_COLUMN, CENTER_ROW] && 
+                cells[CENTER_COLUMN, CENTER_ROW] == cells[RIGHT_COLUMN, BOTTOM_ROW])
+                return CheckWinStatus(LEFT_COLUMN, BOTTOM_ROW);
+            return GameStatus.Pending;
         }
 
-        private GameStatus GetStatus(Cell cell) =>
-            cell switch
-            {
-                Cell.Player1 => GameStatus.Player1_won,
-                Cell.Player2 => GameStatus.Player2_won,
-                _ => GameStatus.Pending,
-            };        
+        private GameStatus CheckWinStatus(int x, int y)
+        {
+            if (cells[x, y] == Cell.Player1)
+                return GameStatus.Player1_won;
+            else if (cells[x, y] == Cell.Player2)
+                return GameStatus.Player2_won;
+            return GameStatus.Pending;
+        }
 
         /// <summary>
         /// Places a mark on the board at the specified coordinates for the current player.
