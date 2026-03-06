@@ -228,7 +228,14 @@
             Console.WriteLine("Esc = exit | Array keys or AWSD = move | Enter or space = mark cell");
         }
 
-        internal void DrawGameOver()
+        /// <summary>
+        /// Renders the final contextual game information, including who won.
+        /// </summary>
+        /// <remarks>
+        /// This method acts as the final "status bar" of the game. It uses <see cref="IsPlayer1Turn"/> 
+        /// to prompt the correct user and displays <see cref="ErrorMessage"/> if a move is invalid.
+        /// </remarks>
+        public void DrawGameOver()
         {
             Console.WriteLine("GAME OVER");
             Console.WriteLine();
