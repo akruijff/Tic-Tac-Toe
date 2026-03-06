@@ -116,6 +116,15 @@
         }
 
         /// <summary>
+        /// Check if a cell on the board at the specified coordiantes is free.
+        /// </summary>
+        /// <param name="x">The horizontal index (0 to <see cref="WIDTH"/> - 1).</param>
+        /// <param name="y">The vertical index (0 to <see cref="HEIGHT"/> - 1).</param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public bool IsFree(int x, int y) => cells[x, y] == Cell.Untaken;
+
+        /// <summary>
         /// Places a mark on the board at the specified coordinates for the current player.
         /// </summary>
         /// <param name="x">The horizontal index (0 to <see cref="WIDTH"/> - 1).</param>

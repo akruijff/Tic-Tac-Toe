@@ -101,15 +101,13 @@
                     break;
                 case ConsoleKey.Enter:
                 case ConsoleKey.Spacebar:
-                    try
+                    if (board.IsFree(CursorX, CursorY))
                     {
                         board.MarkCell(CursorX, CursorY);
                         ErrorMessage = "";
                     }
-                    catch(ArgumentException e)
-                    {
-                        ErrorMessage = e.Message;
-                    }
+                    else
+                        ErrorMessage = $"Cell ({CursorX}, {CursorY}) has already been taken.";
                     Draw();
                     DrawFooter();
                     break;
