@@ -11,13 +11,13 @@
         public static int CENTER_COLUMN { get; } = 1;
         public static int RIGHT_COLUMN { get; } = 2;
 
-        public static int CursorX
+        public int CursorX
         {
             get;
             set => field = Math.Clamp(value, Logic.LEFT_COLUMN, Logic.RIGHT_COLUMN);
         } = Logic.CENTER_COLUMN;
 
-        public static int CursorY
+        public int CursorY
         {
             get;
             set => field = Math.Clamp(value, Logic.TOP_ROW, Logic.BOTTOM_ROW);

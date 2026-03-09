@@ -22,13 +22,13 @@
         {
             while (!isAbortRequested && logic.Status() == GameStatus.Pending)
             {
-                UI.DrawFullScreen(logic.Cells(), Logic.CursorX, Logic.CursorY, errorMessage, isPlayer1Turn);
+                UI.DrawFullScreen(logic.Cells(), logic.CursorX, logic.CursorY, errorMessage, isPlayer1Turn);
                 if (isPlayer1Turn)
                     TurnHuman();
                 else
                     TurnAI();
             }
-            UI.DrawGameOver(logic.Cells(), Logic.CursorX, Logic.CursorY, logic.Status());
+            UI.DrawGameOver(logic.Cells(), logic.CursorX, logic.CursorY, logic.Status());
         }
 
         private void TurnHuman()
@@ -37,34 +37,34 @@
             switch (request)
             {
                 case Request.Exit: isAbortRequested = true; break;
-                case Request.Up: --Logic.CursorY; break;
-                case Request.Down: ++Logic.CursorY; break;
-                case Request.Left: --Logic.CursorX; break;
-                case Request.Right: ++Logic.CursorX; break;
+                case Request.Up: --logic.CursorY; break;
+                case Request.Down: ++logic.CursorY; break;
+                case Request.Left: --logic.CursorX; break;
+                case Request.Right: ++logic.CursorX; break;
                 case Request.Mark:
-                    if (logic.IsCellTaken(Logic.CursorX, Logic.CursorY))
+                    if (logic.IsCellTaken(logic.CursorX, logic.CursorY))
                     {
-                        logic.SetCell(Logic.CursorX, Logic.CursorY, Cell.Player1);
+                        logic.SetCell(logic.CursorX, logic.CursorY, Cell.Player1);
                         errorMessage = "";
                         isPlayer1Turn = false;
                     }
                     else
-                        errorMessage = $"Cell ({Logic.CursorX}, {Logic.CursorY}) has already been taken.";
+                        errorMessage = $"Cell ({logic.CursorX}, {logic.CursorY}) has already been taken.";
                     break;
             }
         }
 
         private void TurnAI()
         {
-            UI.DrawFullScreen(logic.Cells(), Logic.CursorX, Logic.CursorY, errorMessage, isPlayer1Turn);
+            UI.DrawFullScreen(logic.Cells(), logic.CursorX, logic.CursorY, errorMessage, isPlayer1Turn);
             Thread.Sleep(Sleep);
 
-            (Logic.CursorX, Logic.CursorY) = logic.FindUntakenCellLocation();
-            logic.SetCell(Logic.CursorX, Logic.CursorY, Cell.Player2);
-            UI.DrawFullScreen(logic.Cells(), Logic.CursorX, Logic.CursorY, errorMessage, isPlayer1Turn);
+            (logic.CursorX, logic.CursorY) = logic.FindUntakenCellLocation();
+            logic.SetCell(logic.CursorX, logic.CursorY, Cell.Player2);
+            UI.DrawFullScreen(logic.Cells(), logic.CursorX, logic.CursorY, errorMessage, isPlayer1Turn);
             Thread.Sleep(Sleep);
 
-            (Logic.CursorX, Logic.CursorY) = (Logic.CENTER_COLUMN, Logic.CENTER_ROW);
+            (logic.CursorX, logic.CursorY) = (Logic.CENTER_COLUMN, Logic.CENTER_ROW);
             isPlayer1Turn = true;
         }
     }
