@@ -1,166 +1,52 @@
 ﻿namespace Tic_Tac_Toe
 {
-    /// <summary>
-    /// Coordinates the game flow between the <see cref="Logic"/> logic and the <see cref="View"/> display.
-    /// </summary>
-    /// <param name="board">The game board instance containing the grid and win logic.</param>
-    /// <param name="view">The display instance for rendering the UI.</param>
-    public class UI(Logic board)
+    public class UI
     {
-        /// <summary>
-        /// Gets or sets the horizontal cursor position, clamped between 0 and the board's <see cref="Logic.WIDTH"/> - 1.
-        /// </summary>
-        public int CursorX
-        {
-            get;
-            set => field = Math.Clamp(value, Logic.LEFT_COLUMN, Logic.RIGHT_COLUMN);
-        } = 1;
-
-        /// <summary>
-        /// Gets or sets the vertical cursor position, clamped between 0 and the board's <see cref="Logic.HEIGHT"/> - 1.
-        /// </summary>
-        public int CursorY
-        {
-            get;
-            set => field = Math.Clamp(value, Logic.TOP_ROW, Logic.BOTTOM_ROW);
-        } = 1;
-
-        /// <summary>
-        /// Gets or sets an error message to be displayed below the board (e.g., for invalid moves).
-        /// </summary>
-        public string ErrorMessage { get; internal set; } = "";
-
-        /// <summary>
-        /// Indicates if the user has requested to quit the game.
-        /// </summary>
-        private bool isAbortRequested = false;
-
-        /// <summary>
-        /// The delay in milliseconds used for AI "thinking" animations.
-        /// </summary>
-        private const int Sleep = 500;
-
-        /// <summary>
-        /// Starts the main game loop, alternating between the human player and the AI.
-        /// </summary>
-        /// <remarks>
-        /// The loop continues until a winner is found, the board is full, or the user presses Escape.
-        /// </remarks>
-        public void Start()
-        {
-            Draw();
-            DrawFooter();
-            while (!isAbortRequested && board.Status() == GameStatus.Pending)
-            {
-                if (board.IsPlayer1Turn)
-                    Player1();
-                else
-                    Player2();
-            }
-            if (board.Status() != GameStatus.Pending)
-            {
-                Draw();
-                DrawGameOver();
-            }
-        }
-
-        /// <summary>
-        /// Handles human input for Player 1, including movement and cell marking.
-        /// </summary>
-        private void Player1()
+        public static Request GetInput()
         {
             ConsoleKey key = Console.ReadKey(true).Key;
-            switch (key)
+            return key switch
             {
-                case ConsoleKey.Escape:
-                    isAbortRequested = true;
-                    break;
-                case ConsoleKey.W:
-                case ConsoleKey.UpArrow:
-                    CursorY = Math.Clamp(CursorY - 1, Logic.TOP_ROW, Logic.BOTTOM_ROW);
-                    Draw();
-                    DrawFooter();
-                    break;
-                case ConsoleKey.S:
-                case ConsoleKey.DownArrow:
-                    CursorY = Math.Clamp(CursorY + 1, Logic.TOP_ROW, Logic.BOTTOM_ROW);
-                    Draw();
-                    DrawFooter();
-                    break;
-                case ConsoleKey.A:
-                case ConsoleKey.LeftArrow:
-                    CursorX = Math.Clamp(CursorX - 1, Logic.LEFT_COLUMN, Logic.RIGHT_COLUMN);
-                    Draw();
-                    DrawFooter();
-                    break;
-                case ConsoleKey.D:
-                case ConsoleKey.RightArrow:
-                    CursorX = Math.Clamp(CursorX + 1, Logic.LEFT_COLUMN, Logic.RIGHT_COLUMN);
-                    Draw();
-                    DrawFooter();
-                    break;
-                case ConsoleKey.Enter:
-                case ConsoleKey.Spacebar:
-                    if (board.IsFree(CursorX, CursorY))
-                    {
-                        board.MarkCell(CursorX, CursorY);
-                        ErrorMessage = "";
-                    }
-                    else
-                        ErrorMessage = $"Cell ({CursorX}, {CursorY}) has already been taken.";
-                    Draw();
-                    DrawFooter();
-                    break;
-            }
+                ConsoleKey.Escape => Request.Exit,
+                ConsoleKey.W or ConsoleKey.UpArrow => Request.Up,
+                ConsoleKey.S or ConsoleKey.DownArrow => Request.Down,
+                ConsoleKey.A or ConsoleKey.LeftArrow => Request.Left,
+                ConsoleKey.D or ConsoleKey.RightArrow => Request.Right,
+                ConsoleKey.Enter or ConsoleKey.Spacebar => Request.Mark,
+                _ => Request.UnupportedRequest,
+            };
         }
 
-        /// <summary>
-        /// Executes a simple random AI move for Player 2.
-        /// </summary>
-        /// <remarks>
-        /// This method simulates "thinking" by updating the <see cref="View.CursorX"/> 
-        /// and <see cref="View.CursorY"/> before marking the cell.
-        /// </remarks>
-        private void Player2()
+        public static void DrawFullScreen(Cell[,] cells, int cursorX, int cursorY, string errorMessage, bool isPlayer1Turn)
         {
-            Thread.Sleep(Sleep);
-            (CursorX, CursorY) = FreeLocation();
+            Console.CursorVisible = false;
+            UI.Draw(cells, cursorX, cursorY);
+            Console.WriteLine("");
+            Console.WriteLine("Esc = exit | Array keys or AWSD = move | Enter or space = mark cell");
 
-            Thread.Sleep(Sleep);
-            board.MarkCell(CursorX, CursorY);
-            Draw();
+            if (errorMessage.Length != 0)
+                Console.WriteLine(errorMessage);
+            else if (isPlayer1Turn)
+                Console.WriteLine("Your move");
+            else
+                Console.WriteLine("Player 2 turn");
 
-            Thread.Sleep(Sleep);
-            CursorX = Logic.CENTER_COLUMN;
-            CursorY = Logic.CENTER_ROW;
-            Draw();
         }
 
-        private (int x, int y) FreeLocation()
+        public static void DrawGameOver(Cell[,] cells, int cursorX, int cursorY, GameStatus status)
         {
-            Random random = new Random();
-            int x = 0, y = 0;
-            bool isFound = false;
-            while (!isFound)
+            UI.Draw(cells, cursorX, cursorY);
+            UI.DrawGameOverFooter(status switch
             {
-                x = random.Next(0, Logic.WIDTH);
-                y = random.Next(0, Logic.HEIGHT);
-                if (board[x, y] == Cell.Untaken)
-                    isFound = true;
-            }
-            return (x, y);
+                GameStatus.Pending => "You're aborted the game.",
+                GameStatus.Player1_won => "Player 1 won!",
+                GameStatus.Player2_won => "Player 2 won!",
+                GameStatus.Draw => "It was a draw!",
+                _ => throw new NotImplementedException()
+            });
         }
 
-        /// <summary>
-        /// Renders the game interface, including the header, the board grid, and all cell
-        /// contents.
-        /// </summary>
-        /// <remarks>
-        /// This method clears the console and draws the entire static structure. 
-        /// Use this for the initial render or when a complete refresh is required.
-        /// For incremental updates, use the specialized Draw(x, y) or DrawFooter() methods.
-        /// </remarks>
-        public void Draw()
+        public static void Draw(Cell[,] cells, int cursorX, int cursorY)
         {
             Console.Clear();
             Console.WriteLine("Welcome to Tic Tac Toe");
@@ -172,7 +58,7 @@
                 for (int x = 0; x < Logic.WIDTH; ++x)
                 {
                     Console.Write(" ");
-                    DrawCell(x, y);
+                    DrawCell(cells[x, y], x == cursorX && y == cursorY);
                 }
                 Console.WriteLine(" |");
             }
@@ -180,14 +66,16 @@
             Console.WriteLine("");
         }
 
-        private void DrawCell(int x, int y)
+        private static void DrawCell(Cell cell, bool IsCursor)
         {
-            if (x == CursorX && y == CursorY)
+            ConsoleColor fg = Console.ForegroundColor;
+            ConsoleColor bg = Console.BackgroundColor;
+            if (IsCursor)
             {
-                Console.ForegroundColor = ConsoleColor.Black;
-                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = bg;
+                Console.BackgroundColor = fg;
             }
-            switch (board[x, y])
+            switch (cell)
             {
                 case Cell.Player1:
                     Console.Write("X");
@@ -199,52 +87,17 @@
                     Console.Write("#");
                     break;
             }
-            if (x == CursorX && y == CursorY)
+            if (IsCursor)
             {
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = fg;
+                Console.BackgroundColor = bg;
             }
         }
 
-        /// <summary>
-        /// Renders the contextual game information, including error messages, 
-        /// current player turn, and control instructions at the bottom of the interface.
-        /// </summary>
-        /// <remarks>
-        /// This method acts as the "status bar" of the game. It uses <see cref="IsPlayer1Turn"/> 
-        /// to prompt the correct user and displays <see cref="ErrorMessage"/> if a move is invalid.
-        /// </remarks>
-        public void DrawFooter()
-        {
-            if (ErrorMessage.Length != 0)
-                Console.WriteLine(ErrorMessage);
-            else if (board.IsPlayer1Turn)
-                Console.WriteLine("Your move");
-            else
-                Console.WriteLine("Player 2 turn");
-            Console.WriteLine("");
-            Console.WriteLine("Esc = exit | Array keys or AWSD = move | Enter or space = mark cell");
-        }
-
-        /// <summary>
-        /// Renders the final contextual game information, including who won.
-        /// </summary>
-        /// <remarks>
-        /// This method acts as the final "status bar" of the game. It uses <see cref="IsPlayer1Turn"/> 
-        /// to prompt the correct user and displays <see cref="ErrorMessage"/> if a move is invalid.
-        /// </remarks>
-        public void DrawGameOver()
+        public static void DrawGameOverFooter(string s)
         {
             Console.WriteLine("GAME OVER");
             Console.WriteLine();
-            string s = board.Status() switch
-            {
-                GameStatus.Pending => "You're aborted the game.",
-                GameStatus.Player1_won => "Player 1 won!",
-                GameStatus.Player2_won => "Player 2 won!",
-                GameStatus.Draw => "It was a draw!",
-                _ => throw new NotImplementedException()
-            };
             Console.WriteLine(s);
         }
     }

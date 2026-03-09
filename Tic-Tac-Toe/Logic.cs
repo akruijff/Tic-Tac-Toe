@@ -1,23 +1,9 @@
 ﻿namespace Tic_Tac_Toe
 {
-    /// <summary>
-    /// Manages the 3x3 game board, handles move validation, and determines the game status.
-    /// </summary>
-    public class Logic()
+    internal class Logic(int width, int height)
     {
-        /// <summary>
-        /// Indicates whether it is currently Player 1's turn.
-        /// </summary>
-        public bool IsPlayer1Turn { get; private set; } = true;
-
-        /// <summary>The horizontal size of the board.</summary>
         public static int WIDTH { get; } = 3;
-
-        /// <summary>The vertical size of the board.</summary>
         public static int HEIGHT { get; } = 3;
-
-        private int freeCells = WIDTH * HEIGHT;
-
         public static int TOP_ROW { get; } = 0;
         public static int CENTER_ROW { get; } = 1;
         public static int BOTTOM_ROW { get; } = 2;
@@ -25,29 +11,43 @@
         public static int CENTER_COLUMN { get; } = 1;
         public static int RIGHT_COLUMN { get; } = 2;
 
-        private readonly Cell[,] cells = SetAll(new Cell[WIDTH, HEIGHT], Cell.Untaken);
+        public static int CursorX
+        {
+            get;
+            set => field = Math.Clamp(value, Logic.LEFT_COLUMN, Logic.RIGHT_COLUMN);
+        } = Logic.CENTER_COLUMN;
+
+        public static int CursorY
+        {
+            get;
+            set => field = Math.Clamp(value, Logic.TOP_ROW, Logic.BOTTOM_ROW);
+        } = Logic.CENTER_ROW;
+
+        private readonly Cell[,] cells = SetAll(new Cell[width, height], Cell.Untaken);
 
         private static Cell[,] SetAll(Cell[,] cells, Cell value)
         {
-            for (int y = 0; y < HEIGHT; ++y)
-                for (int x = 0; x < WIDTH; ++x)
+            for (int y = 0; y < cells.GetLength(1); ++y)
+                for (int x = 0; x < cells.GetLength(0); ++x)
                     cells[x, y] = value;
             return cells;
         }
 
-        /// <summary>
-        /// Gets or sets the <see cref="Cell"/> state at the specified coordinates.
-        /// </summary>
-        /// <param name="x">The horizontal index.</param>
-        /// <param name="y">The vertical index.</param>
-        /// <exception cref="ArgumentException">Thrown if the game is over or the cell is already occupied.</exception>
-        public Cell this[int x, int y] { get => cells[x, y]; }
+        public void SetCell(int x, int y, Cell value)
+        {
+            cells[x, y] = value;
+        }
 
-        /// <summary>
-        /// Evaluates the board to check if a player has won or if the game is still pending.
-        /// </summary>
-        /// <returns>The current <see cref="GameStatus"/>.</returns>
-        internal GameStatus Status()
+        public Cell[,] Cells()
+        {
+            Cell[,] copy = new Cell[width, height];
+            for (int y = 0; y < height; ++y)
+                for (int x = 0; x < width; ++x)
+                    copy[x, y] = cells[x, y];
+            return copy;
+        }
+
+        public GameStatus Status()
         {
             for (int x = 0; x < WIDTH; ++x)
             {
@@ -71,20 +71,20 @@
             if (value2 != GameStatus.Pending)
                 return value2;
 
-            return freeCells == 0 ? GameStatus.Draw : GameStatus.Pending;
+            return CountUntaken() == 0 ? GameStatus.Draw : GameStatus.Pending;
         }
 
         private GameStatus CheckColumn(int x)
         {
-            if (cells[x, TOP_ROW] == cells[x, CENTER_ROW] && 
+            if (cells[x, TOP_ROW] == cells[x, CENTER_ROW] &&
                 cells[x, CENTER_ROW] == cells[x, BOTTOM_ROW])
-                return CheckWinStatus(x, TOP_ROW);            
+                return CheckWinStatus(x, TOP_ROW);
             return GameStatus.Pending;
         }
 
         private GameStatus CheckRow(int y)
         {
-            if (cells[LEFT_COLUMN, y] == cells[CENTER_COLUMN, y] && 
+            if (cells[LEFT_COLUMN, y] == cells[CENTER_COLUMN, y] &&
                 cells[CENTER_COLUMN, y] == cells[RIGHT_COLUMN, y])
                 return CheckWinStatus(LEFT_COLUMN, y);
             return GameStatus.Pending;
@@ -92,7 +92,7 @@
 
         private GameStatus CheckDiagonal1()
         {
-            if (cells[LEFT_COLUMN, TOP_ROW] == cells[CENTER_COLUMN, CENTER_ROW] && 
+            if (cells[LEFT_COLUMN, TOP_ROW] == cells[CENTER_COLUMN, CENTER_ROW] &&
                 cells[CENTER_COLUMN, CENTER_ROW] == cells[RIGHT_COLUMN, BOTTOM_ROW])
                 return CheckWinStatus(LEFT_COLUMN, TOP_ROW);
             return GameStatus.Pending;
@@ -100,8 +100,8 @@
 
         private GameStatus CheckDiagonal2()
         {
-            if (cells[LEFT_COLUMN, BOTTOM_ROW] == cells[CENTER_COLUMN, CENTER_ROW] && 
-                cells[CENTER_COLUMN, CENTER_ROW] == cells[RIGHT_COLUMN, BOTTOM_ROW])
+            if (cells[LEFT_COLUMN, BOTTOM_ROW] == cells[CENTER_COLUMN, CENTER_ROW] &&
+                cells[CENTER_COLUMN, CENTER_ROW] == cells[RIGHT_COLUMN, TOP_ROW])
                 return CheckWinStatus(LEFT_COLUMN, BOTTOM_ROW);
             return GameStatus.Pending;
         }
@@ -115,32 +115,34 @@
             return GameStatus.Pending;
         }
 
-        /// <summary>
-        /// Check if a cell on the board at the specified coordiantes is free.
-        /// </summary>
-        /// <param name="x">The horizontal index (0 to <see cref="WIDTH"/> - 1).</param>
-        /// <param name="y">The vertical index (0 to <see cref="HEIGHT"/> - 1).</param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public bool IsFree(int x, int y) => cells[x, y] == Cell.Untaken;
-
-        /// <summary>
-        /// Places a mark on the board at the specified coordinates for the current player.
-        /// </summary>
-        /// <param name="x">The horizontal index (0 to <see cref="WIDTH"/> - 1).</param>
-        /// <param name="y">The vertical index (0 to <see cref="HEIGHT"/> - 1).</param>
-        public void MarkCell(int x, int y)
+        private int CountUntaken()
         {
-            if (Status() != GameStatus.Pending)
-                throw new ArgumentException("GAME OVER!");
-            if (cells[x, y] != Cell.Untaken)
-                throw new ArgumentException($"Cell ({x}, {y}) has already been taken by {cells[x, y]}");
-            cells[x, y] = IsPlayer1Turn ? Cell.Player1 : Cell.Player2;
-            --freeCells;
-            IsPlayer1Turn = !IsPlayer1Turn;
+            int n = 0;
+            for (int y = 0; y < cells.GetLength(1); ++y)
+                for (int x = 0; x < cells.GetLength(0); ++x)
+                    if (cells[x, y] == Cell.Untaken)
+                        ++n;
+            return n;
         }
 
-        /// <returns>A string such as "Pending", "Player1_won", or "Player2_won".</returns>
-        public override string ToString() => Status().ToString();
+        public (int x, int y) FindUntakenCellLocation()
+        {
+            if (CountUntaken() <= 0)
+                throw new ArgumentException("At least on cell needs to be untaken");
+
+            int x = 0, y = 0;
+            bool isFound = false;
+            Random random = new Random();
+            while (!isFound)
+            {
+                x = random.Next(0, Logic.WIDTH);
+                y = random.Next(0, Logic.HEIGHT);
+                if (cells[x, y] == Cell.Untaken)
+                    isFound = true;
+            }
+            return (x, y);
+        }
+
+        public bool IsCellTaken(int x, int y) => cells[x, y] == Cell.Untaken;
     }
 }
