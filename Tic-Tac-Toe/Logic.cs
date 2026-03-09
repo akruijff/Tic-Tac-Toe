@@ -14,14 +14,14 @@
         public int CursorX
         {
             get;
-            set => field = Math.Clamp(value, Logic.LEFT_COLUMN, Logic.RIGHT_COLUMN);
-        } = Logic.CENTER_COLUMN;
+            set => field = Math.Clamp(value, LEFT_COLUMN, RIGHT_COLUMN);
+        } = CENTER_COLUMN;
 
         public int CursorY
         {
             get;
-            set => field = Math.Clamp(value, Logic.TOP_ROW, Logic.BOTTOM_ROW);
-        } = Logic.CENTER_ROW;
+            set => field = Math.Clamp(value, TOP_ROW, BOTTOM_ROW);
+        } = CENTER_ROW;
 
         private readonly Cell[,] cells = SetAll(new Cell[width, height], Cell.Untaken);
 
@@ -135,8 +135,8 @@
             Random random = new Random();
             while (!isFound)
             {
-                x = random.Next(0, Logic.WIDTH);
-                y = random.Next(0, Logic.HEIGHT);
+                x = random.Next(0, WIDTH);
+                y = random.Next(0, HEIGHT);
                 if (cells[x, y] == Cell.Untaken)
                     isFound = true;
             }
